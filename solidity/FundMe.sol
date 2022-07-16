@@ -4,25 +4,30 @@ pragma solidity ^0.8.0;
 
 import "./PriceConvertor.sol";
 
+error notOwnerError() ;
+
 contract FundMe {
     using PriceConvertor for uint256;
 
-    uint256 public  minUsd = 1 * 1e18;
+    uint256 public constant  MIN_USD = 1 * 1e18;
     address[] public funders;
     mapping(address => uint256) public addressToFunds;
-    address public owner;
+    address public immutable owner;
 
     constructor() {
         owner = msg.sender;
     }
 
     modifier isOwner{
-        require(msg.sender == owner, "only owner can call this function");
+        // require(msg.sender == owner, "only owner can call this function");
+        if(msg.sender != owner){
+            revert notOwnerError();
+        }
         _;
     }
 
     function fund() public payable {
-        require(msg.value.getConversionRate() > minUsd, "minimum of 10USD needed");
+        require(msg.value.getConversionRate() > MIN_USD, "minimum of 10USD needed");
         funders.push(msg.sender);
         addressToFunds[msg.sender] += msg.value;
     }
@@ -46,4 +51,13 @@ contract FundMe {
         return addressToFunds[funder];
     }
    
+
+    receive() external payable {
+        fund();
+    }
+
+    fallback() external payable {
+        fund();
+    }
+
 }
