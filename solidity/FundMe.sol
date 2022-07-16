@@ -7,12 +7,19 @@ import "./PriceConvertor.sol";
 contract FundMe {
     using PriceConvertor for uint256;
 
+    uint256 public  minUsd = 1 * 1e18;
+    address[] public funders;
+    mapping(address => uint256) public addressToFunds;
+    address public owner;
 
+    constructor() {
+        owner = msg.sender;
+    }
 
-    uint256 minUsd = 1 * 1e18;
-    address[] funders;
-    mapping(address => uint256) addressToFunds;
-
+    modifier isOwner{
+        require(msg.sender == owner, "only owner can call this function");
+        _;
+    }
 
     function fund() public payable {
         require(msg.value.getConversionRate() > minUsd, "minimum of 10USD needed");
@@ -20,7 +27,7 @@ contract FundMe {
         addressToFunds[msg.sender] += msg.value;
     }
 
-    function withdraw() public {
+    function withdraw() public isOwner{
         for(uint i=0; i<funders.length; i++){
             address founderAddress=funders[i];
             addressToFunds[founderAddress]=0;
