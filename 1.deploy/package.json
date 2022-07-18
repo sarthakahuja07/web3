@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "@types/node": "^18.0.6",
+    "dotenv": "^16.0.1",
+    "ethers": "^5.6.9",
+    "fs": "^0.0.1-security",
+    "typescript": "^4.7.4"
+  },
+  "scripts": {
+    "compile": "solcjs --bin --abi --include-path node_modules/ --base-path . -o ./compiled ./simpleStorage.sol"
+  }
+}
