@@ -16,9 +16,18 @@ const provider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:7545");
 const wallet = new ethers.Wallet(process.env.ACCOUNT_1!, provider);
 
 const contractFactory = new ethers.ContractFactory(abi, binary, wallet);
-const deployContract = async () => {
+const main = async () => {
 	const deployedContract = await contractFactory.deploy();
-	console.log(deployedContract);
-};
+	// console.log(deployedContract.deployTransaction);
+	var currData = await deployedContract.getData();
+	console.log("curr data", currData.toString());
 
-const deployedContract = deployContract();
+	const transactionResponse = await deployedContract.setData(10);
+	let transactionReceipt = await transactionResponse.wait();
+
+	console.log("transaction receipt: ", transactionReceipt);
+
+	currData = await deployedContract.getData();
+	console.log("curr data", currData.toString());
+};
+main();
