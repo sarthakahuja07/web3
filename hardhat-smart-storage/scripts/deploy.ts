@@ -1,26 +1,31 @@
-
-// async function main() {
-//   const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-//   const ONE_YEAR_IN_SECS = 365 * 24 * 60 * 60;
-//   const unlockTime = currentTimestampInSeconds + ONE_YEAR_IN_SECS;
-
-//   const lockedAmount = ethers.utils.parseEther("1");
-
-//   const Lock = await ethers.getContractFactory("Lock");
-//   const lock = await Lock.deploy(unlockTime, { value: lockedAmount });
-
-//   await lock.deployed();
-
-//   console.log("Lock with 1 ETH deployed to:", lock.address);
-// }
-
-
-import { ethers } from "hardhat";
+import { ethers, run, network } from "hardhat";
 
 const main = async () => {
-    
+	const simpleStorageContract = await ethers.getContractFactory(
+		"simpleStorage"
+	);
 
+	const deployedContract = await simpleStorageContract.deploy();
+	await deployedContract.deployed();
 
+	if (network.config.chainId === 4 && process.env.ETHERSCAN_API_KEY) {
+		console.log("deployed at ", deployedContract.address);
+
+		await deployedContract.deployTransaction.wait(6);
+		await verify(deployedContract.address, []);
+	}
+	console.log(deployedContract.address);
+};
+
+const verify = async (contractAddress: string, args: any[]) => {
+	try {
+		await run("verify:verify", {
+			contractAddress,
+			args
+		});
+	} catch (err: any) {
+		console.log(err);
+	}
 };
 
 main()
@@ -29,4 +34,3 @@ main()
 		console.log(error);
 		process.exit(1);
 	});
-
