@@ -12,7 +12,7 @@ const binary = fs.readFileSync(
 	"utf8"
 );
 
-const provider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:7545");
+const provider = new ethers.providers.JsonRpcProvider(process.env.RINKEBY_RPC);
 const wallet = new ethers.Wallet(process.env.ACCOUNT_1!, provider);
 
 const contractFactory = new ethers.ContractFactory(abi, binary, wallet);
