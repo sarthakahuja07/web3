@@ -10,11 +10,24 @@ const main = async () => {
 
 	if (network.config.chainId === 4 && process.env.ETHERSCAN_API_KEY) {
 		console.log("deployed at ", deployedContract.address);
-
 		await deployedContract.deployTransaction.wait(6);
 		await verify(deployedContract.address, []);
 	}
-	console.log(deployedContract.address);
+	console.log("deployed at : ", deployedContract.address);
+	var currentValue = await deployedContract.getData();
+	console.log("current value : ", currentValue);
+
+	var transactionResponse = await deployedContract.setData(7);
+	await transactionResponse.wait(1);
+	currentValue = await deployedContract.getData();
+	console.log("updated value : ", currentValue);
+
+	var transactionResponse = await deployedContract.increment(3);
+	await transactionResponse.wait(1);
+	currentValue = await deployedContract.getData();
+	console.log("incemented value : ", currentValue);
+
+	
 };
 
 const verify = async (contractAddress: string, args: any[]) => {
