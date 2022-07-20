@@ -3,7 +3,7 @@ import { Contract } from "ethers";
 import { ethers } from "hardhat";
 
 describe("SimpleStorage", function () {
-	let simpleStorage: Contract
+	let simpleStorage: Contract;
 	let SimpleStorageFactory;
 	beforeEach(async () => {
 		SimpleStorageFactory = await ethers.getContractFactory("SimpleStorage");
@@ -16,8 +16,36 @@ describe("SimpleStorage", function () {
 	it("Should update when we call store", async function () {
 		let expectedValue = 7;
 		let transactionResponse = await simpleStorage.setData(expectedValue);
-		let transactionReceipt = await transactionResponse.wait();
+		let transactionReceipt = await transactionResponse.wait(1);
 		let currentValue = await simpleStorage.getData();
 		assert.equal(currentValue.toString(), expectedValue.toString());
+	});
+	it("should increment the value in store", async () => {
+		let startingValue = 5,
+			incrementor = 2;
+		let transactionResponse = await simpleStorage.setData(startingValue);
+		let transactionReceipt = await transactionResponse.wait(1);
+
+		transactionResponse = await simpleStorage.increment(incrementor);
+		transactionReceipt = await transactionResponse.wait(1);
+		let currentValue = await simpleStorage.getData();
+		assert.equal(
+			currentValue.toString(),
+			(startingValue + incrementor).toString()
+		);
+	});
+	it("should decrement the value in store", async () => {
+		let startingValue = 5,
+        decrementor = 2;
+		let transactionResponse = await simpleStorage.setData(startingValue);
+		let transactionReceipt = await transactionResponse.wait(1);
+
+		transactionResponse = await simpleStorage.decrement(decrementor);
+		transactionReceipt = await transactionResponse.wait(1);
+		let currentValue = await simpleStorage.getData();
+		assert.equal(
+			currentValue.toString(),
+			(startingValue - decrementor).toString()
+		);
 	});
 });

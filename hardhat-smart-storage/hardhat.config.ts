@@ -3,6 +3,7 @@ import "@nomicfoundation/hardhat-toolbox";
 import "./tasks/block-number";
 import "./tasks/accounts";
 import "hardhat-gas-reporter";
+import "solidity-coverage"
 require("dotenv").config();
 
 const config: HardhatUserConfig = {
