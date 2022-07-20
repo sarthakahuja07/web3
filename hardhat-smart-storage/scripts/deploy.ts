@@ -2,7 +2,7 @@ import { ethers, run, network } from "hardhat";
 
 const main = async () => {
 	const simpleStorageContract = await ethers.getContractFactory(
-		"simpleStorage"
+		"SimpleStorage"
 	);
 
 	const deployedContract = await simpleStorageContract.deploy();

@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.0;
 
-contract simpleStorage {
+contract SimpleStorage {
     uint256 public storedData;
 
     constructor() {
