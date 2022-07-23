@@ -1,10 +1,11 @@
 import { assert } from "chai";
-import { Contract } from "ethers";
 import { ethers } from "hardhat";
+import { SimpleStorage__factory } from "../typechain-types/factories/SimpleStorage__factory";
+import { SimpleStorage } from "../typechain-types/SimpleStorage";
 
 describe("SimpleStorage", function () {
-	let simpleStorage: Contract;
-	let SimpleStorageFactory;
+	let simpleStorage: SimpleStorage;
+	let SimpleStorageFactory: SimpleStorage__factory;
 	beforeEach(async () => {
 		SimpleStorageFactory = await ethers.getContractFactory("SimpleStorage");
 		simpleStorage = await SimpleStorageFactory.deploy();
@@ -36,7 +37,7 @@ describe("SimpleStorage", function () {
 	});
 	it("should decrement the value in store", async () => {
 		let startingValue = 5,
-        decrementor = 2;
+			decrementor = 2;
 		let transactionResponse = await simpleStorage.setData(startingValue);
 		let transactionReceipt = await transactionResponse.wait(1);
 
