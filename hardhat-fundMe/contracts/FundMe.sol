@@ -14,7 +14,7 @@ contract FundMe {
     address[] public funders;
     mapping(address => uint256) public addressToFunds;
     address public immutable owner;
-    AggregatorV3Interface private priceFeed;
+    AggregatorV3Interface public priceFeed;
 
     constructor(address priceFeedAddress) {
         owner = msg.sender;
