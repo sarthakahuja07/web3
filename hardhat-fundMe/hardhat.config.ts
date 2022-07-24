@@ -1,13 +1,23 @@
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
 import "solidity-coverage";
-require("hardhat-deploy");
+import "hardhat-deploy";
+
 import "hardhat-gas-reporter";
 
 require("dotenv").config();
 
 const config: HardhatUserConfig = {
-	solidity: "0.8.9",
+	solidity: {
+		compilers: [
+			{
+				version: "0.8.8"
+			},
+			{
+				version: "0.6.6"
+			}
+		]
+	},
 	defaultNetwork: "hardhat",
 	networks: {
 		rinkeby: {
@@ -33,6 +43,9 @@ const config: HardhatUserConfig = {
 		currency: "INR",
 		coinmarketcap: process.env.COINMARKETCAP_API_KEY,
 		token: "MATIC"
+	},
+	namedAccounts: {
+		deployer: 0
 	}
 };
 
