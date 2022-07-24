@@ -1,6 +1,7 @@
 import { DeployFunction } from "hardhat-deploy/dist/types";
 import { networkConfig, developmentChains } from "../helper-hardhat-config";
 import { network } from "hardhat";
+import verify from "../utils/verify";
 
 const fundMeDeploy: DeployFunction = async ({
 	getNamedAccounts,
@@ -19,12 +20,19 @@ const fundMeDeploy: DeployFunction = async ({
 	}
 	log("deploying fundMe");
 
-	await deploy("FundMe", {
+	const fundMe = await deploy("FundMe", {
 		from: deployer,
 		args: [priceFeedAddress],
-		log: true
+		log: true,
+		waitConfirmations: networkConfig[network.name].blockConfirmations || 0
 	});
 	log(" 👾 👾 👾 👾 👾 👾  deployed fundMe");
+	if (
+		!developmentChains.includes(network.name) &&
+		process.env.ETHERSCAN_API_KEY
+	) {
+		await verify(fundMe.address, [priceFeedAddress]);
+	}
 };
 export default fundMeDeploy;
 fundMeDeploy.tags = ["FundMe", "all"];
