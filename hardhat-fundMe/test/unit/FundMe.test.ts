@@ -21,8 +21,8 @@ describe("FundMe", function () {
 
 	describe("constructor", function () {
 		it("sets the aggregator addresses correctly", async () => {
-            const response = await fundMe.priceFeed();
-            console.log(response);
+			const response = await fundMe.priceFeed();
+			console.log(response);
 			assert.equal(response.toString(), mockV3Aggregator.address);
 		});
 	});
@@ -120,6 +120,38 @@ describe("FundMe", function () {
 				(await fundMe.addressToFunds(accounts[1].address)).toString(),
 				"0"
 			);
+		});
+	});
+	describe("retrieve funds from an address", () => {
+		beforeEach(async () => {
+			await fundMe.fund({ value: ethers.utils.parseEther("1") });
+		});
+		it("returns the amount of funds from an address", async () => {
+			const response = await fundMe.getFundsFromAdrress(deployer.address);
+			assert.equal(
+				response.toString(),
+				ethers.utils.parseEther("1").toString()
+			);
+		});
+	});
+	// test for payable and fallback
+	describe("fallback", () => {
+		it("should be added to funders", async () => {
+			const response = await fundMe.fallback({
+				value: ethers.utils.parseEther("1")
+			});
+			const funder = await fundMe.funders(0);
+
+			assert.equal(funder, deployer.address);
+		});
+		it("should be update the balance of fundMe contract", async () => {
+			const response = await fundMe.fallback({
+				value: ethers.utils.parseEther("1")
+			});
+			// get balance of fundMe contract
+			const balance = await fundMe.provider.getBalance(fundMe.address);
+
+			assert.equal(balance.toString(), ethers.utils.parseEther("1").toString());
 		});
 	});
 });
